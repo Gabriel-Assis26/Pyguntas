@@ -2,6 +2,8 @@ import pygame
 from deep_translator import GoogleTranslator
 from src.funcoes import (
     buscar_perguntas,
+    traduz,
+    embaralha_respostas,
 )
 
 def executar_jogo():
@@ -12,48 +14,40 @@ def executar_jogo():
     tela.fill((0,0,0))
     clock = pygame.time.Clock()
 
-    perguntas = buscar_perguntas()
+    questoes = buscar_perguntas()
     pAtual = 0
     rodando = True
+    respostas = embaralha_respostas(questoes[pAtual])
     while rodando:
         tela.fill((0,0,0))
         fonte = pygame.font.SysFont("Arial", 24)
-        tradPergunta = GoogleTranslator(
-            source='en',
-            target='pt'
-        ).translate(perguntas[pAtual]['question'])
+        tradPergunta = traduz(questoes[pAtual]['question'])
         texto = fonte.render(
             tradPergunta,
             True,
             (255,255,255)
         )
         tela.blit(texto, (100,100))
-        botao_correta = pygame.Rect(100, 300, 300, 60)
-        pygame.draw.rect(tela, (0, 100, 255), botao_correta)
-        tradCerta = GoogleTranslator(
-            source='en',
-            target='pt'
-        ).translate(perguntas[pAtual]['correct_answer'])
-        texto = fonte.render(tradCerta, True, (255, 255, 255))
-        tela.blit(texto, texto.get_rect(center=botao_correta.center))
-        
+        botao_correta = 'pygame.Rect(100, 300, 300, 60)'
         botoes_erradas = []
-        for i,text in enumerate(perguntas[pAtual]['incorrect_answers']):
+        for i,resp in enumerate(respostas):
             botao = pygame.Rect(
                 100,
-                380 + i * 80,
+                300 + i * 80,
                 300,
                 60
             )
-            tradErrada = GoogleTranslator(
-                source='en',
-                target='pt'
-            ).translate(text)
-            botoes_erradas.append(botao)
-            pygame.draw.rect(tela,(0,100,255),botao)
-            texto = fonte.render(tradErrada, True, (255, 255, 255))
-            texto_rect = texto.get_rect(center=botao.center)
-            tela.blit(texto, texto.get_rect(center=botao.center))
+            if resp[1] == 0:
+                botao_correta = botao
+                pygame.draw.rect(tela, (0, 100, 255), botao)
+                texto = fonte.render(resp[0], True, (255, 255, 255))
+                tela.blit(texto, texto.get_rect(center=botao.center))
+            else:
+                botoes_erradas.append(botao)
+                pygame.draw.rect(tela,(0,100,255),botao)
+                texto = fonte.render(resp[0], True, (255, 255, 255))
+                texto_rect = texto.get_rect(center=botao.center)
+                tela.blit(texto, texto.get_rect(center=botao.center))
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 rodando = False
@@ -62,6 +56,7 @@ def executar_jogo():
                 if botao_correta.collidepoint(pos):
                     print("Acertou!")
                     pAtual += 1
+                    respostas = embaralha_respostas(questoes[pAtual])
                 for i, botao_errado in enumerate(botoes_erradas):
                     if botao_errado.collidepoint(pos):
                         print("Errou!")
