@@ -18,9 +18,28 @@ def executar_jogo():
     pAtual = 0
     rodando = True
     respostas = embaralha_respostas(questoes[pAtual])
+
+    tempo_limite = 5
+    inicio = pygame.time.get_ticks()
+
     while rodando:
         tela.fill((0,0,0))
         fonte = pygame.font.SysFont("Arial", 24)
+
+        tempo_passado = (pygame.time.get_ticks() - inicio) // 1000
+        tempo_restante = tempo_limite - tempo_passado
+        if tempo_restante <= 0:
+            print("Tempo esgotado!")
+            inicio = pygame.time.get_ticks()
+            pAtual += 1
+            respostas = embaralha_respostas(questoes[pAtual])
+        timer = fonte.render(
+            f"Tempo: {tempo_restante}",
+            True,
+            (255, 255, 255)
+        )
+        tela.blit(timer, (50, 50))
+
         tradPergunta = traduz(questoes[pAtual]['question'])
         texto = fonte.render(
             tradPergunta,
@@ -28,6 +47,7 @@ def executar_jogo():
             (255,255,255)
         )
         tela.blit(texto, (100,100))
+
         botao_correta = 'pygame.Rect(100, 300, 300, 60)'
         botoes_erradas = []
         for i,resp in enumerate(respostas):
