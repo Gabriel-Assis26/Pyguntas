@@ -2,7 +2,7 @@ import requests, html, random
 from deep_translator import GoogleTranslator
 
 def buscar_perguntas():
-    url = "https://opentdb.com/api.php?amount=2" 
+    url = "https://opentdb.com/api.php?amount=10" 
     resposta = requests.get(url)
     return resposta.json()['results']
 

@@ -8,10 +8,13 @@ from src.funcoes import (
 from src.telaJogo import (
     renderJogo
 )
+from src.telaMenu import (
+    renderMenu
+)
 
 def executar_jogo():
     pygame.init()
-    estado = 'jogo'
+    estado = 'menu'
 
     tela = pygame.display.set_mode((1000, 700))
     pygame.display.set_caption("Pyguntas")
@@ -31,7 +34,9 @@ def executar_jogo():
         
         tela.fill((0,0,0))
         fonte = pygame.font.SysFont("Arial", 24)
-        if estado == "jogo":
+        if estado == "menu":
+            iniciar,config,rank=renderMenu(tela,fonte)
+        elif estado == "jogo":
             botao_correta, botoes_erradas = renderJogo(
                 tela,
                 tempo_limite,
@@ -42,24 +47,30 @@ def executar_jogo():
                 respostas
             )
         
-            
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 rodando = False
-            if evento.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                if botao_correta.collidepoint(pos):
-                    print("Acertou!")
-                    if pAtual >= len(questoes)-1:
-                        rodando = False
-                        continue
-                    pAtual += 1
-                    respostas = embaralha_respostas(questoes[pAtual])
-                for i, botao_errado in enumerate(botoes_erradas):
-                    if botao_errado.collidepoint(pos):
-                        print("Errou!")
-                tradPergunta = traduz(questoes[pAtual]['question'])
-                inicio = pygame.time.get_ticks()
+            if estado == "menu":
+                if evento.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                    if iniciar.collidepoint(pos):
+                        estado = 'jogo'
+            
+            elif estado == "jogo":
+                if evento.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                    if botao_correta.collidepoint(pos):
+                        print("Acertou!")
+                        if pAtual >= len(questoes)-1:
+                            rodando = False
+                            continue
+                        pAtual += 1
+                        respostas = embaralha_respostas(questoes[pAtual])
+                    for i, botao_errado in enumerate(botoes_erradas):
+                        if botao_errado.collidepoint(pos):
+                            print("Errou!")
+                    tradPergunta = traduz(questoes[pAtual]['question'])
+                    inicio = pygame.time.get_ticks()
         pygame.display.flip()
         clock.tick(60)
 

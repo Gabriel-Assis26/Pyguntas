@@ -1,7 +1,5 @@
 import pygame
 from src.funcoes import (
-    buscar_perguntas,
-    traduz,
     embaralha_respostas,
 )
 
