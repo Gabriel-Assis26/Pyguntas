@@ -19,7 +19,7 @@ def executar_jogo():
     rodando = True
     respostas = embaralha_respostas(questoes[pAtual])
 
-    tempo_limite = 5
+    tempo_limite = 45
     inicio = pygame.time.get_ticks()
 
     while rodando:
