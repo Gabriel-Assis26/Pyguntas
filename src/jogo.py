@@ -18,6 +18,7 @@ def executar_jogo():
     pAtual = 0
     rodando = True
     respostas = embaralha_respostas(questoes[pAtual])
+    tradPergunta = traduz(questoes[pAtual]['question'])
 
     tempo_limite = 45
     inicio = pygame.time.get_ticks()
@@ -40,7 +41,6 @@ def executar_jogo():
         )
         tela.blit(timer, (50, 50))
 
-        tradPergunta = traduz(questoes[pAtual]['question'])
         texto = fonte.render(
             tradPergunta,
             True,
@@ -80,6 +80,8 @@ def executar_jogo():
                 for i, botao_errado in enumerate(botoes_erradas):
                     if botao_errado.collidepoint(pos):
                         print("Errou!")
+                tradPergunta = traduz(questoes[pAtual]['question'])
+                inicio = pygame.time.get_ticks()
         pygame.display.flip()
         clock.tick(60)
 
