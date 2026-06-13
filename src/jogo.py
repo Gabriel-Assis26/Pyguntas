@@ -69,9 +69,13 @@ def executar_jogo():
                     for i, botao_errado in enumerate(botoes_erradas):
                         if botao_errado.collidepoint(pos):
                             print("Errou!")
+                            if pAtual >= len(questoes) -1:
+                                rodando = False
+                                continue
+                            pAtual += 1
                     tradPergunta = traduz(questoes[pAtual]['question'])
                     inicio = pygame.time.get_ticks()
         pygame.display.flip()
         clock.tick(60)
 
-    pygame.quit()
+    pygame.quit()   
